@@ -22,7 +22,19 @@ class DBUtil:
     """
 
     def __init__(self, oracle_config: dict, logging_formatter: logging.Formatter = None):
+        """
+        Setup for oracle db connections. oracle_config must be a python dictionary with the following fields:
+        host
+        port
+        instance (service name)
+        user
+        pwd
+
+        :param oracle_config:
+        :param logging_formatter:
+        """
         self.oracle_config = oracle_config
+        self.pool = None
 
         self.logger = logging.getLogger(__name__)
         stream_handler = logging.StreamHandler()
@@ -44,7 +56,9 @@ class DBUtil:
         """
         Function for creating a session pool with the database
         """
-        if self.oracle_config.get('pool') is None:
+        if self.pool:
+            return self.pool
+        else:
             host = self.oracle_config.get('host')
             port = self.oracle_config.get('port')
             instance = self.oracle_config.get('instance')
@@ -61,7 +75,7 @@ class DBUtil:
                     threaded=True,
                     encoding="UTF-8"
                     )
-                self.oracle_config['pool'] = pool
+                self.pool = pool
                 return pool
 
             except cx_Oracle.DatabaseError as err:
@@ -70,8 +84,6 @@ class DBUtil:
                 self.logger.error("Context: %s", obj.context)
                 self.logger.error("Message: %s", obj.message)
                 raise Exception(f"Error creating pool: {obj.message}")
-        else:
-            return self.oracle_config['pool']
 
     def create_connection(self, pool):
         """
