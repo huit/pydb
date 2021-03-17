@@ -37,9 +37,36 @@ class OracleDB:
         :param logging_format: defaults to None here, which translates to the pylog.get_commong_logging_format
         """
         self.oracle_config = oracle_config
-        self.pool = self.get_session_pool()
+        self.pool = self.set_up_session_pool()
 
         self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
+
+    def set_up_session_pool(self):
+        host = self.oracle_config.get('host')
+        port = self.oracle_config.get('port')
+        instance = self.oracle_config.get('instance')
+
+        try:
+            dsn_str = cx_Oracle.makedsn(host, port, service_name=instance)
+            pool = cx_Oracle.SessionPool(
+                user=self.oracle_config.get('user'),
+                password=self.oracle_config.get('pwd'),
+                dsn=dsn_str,
+                min=2,
+                max=5,
+                increment=1,
+                threaded=True,
+                encoding="UTF-8"
+            )
+            self.pool = pool
+            return pool
+
+        except cx_Oracle.DatabaseError as err:
+            obj, = err.args
+            self.logger.error("Error creating pool")
+            self.logger.error("Context: %s", obj.context)
+            self.logger.error("Message: %s", obj.message)
+            raise Exception(f"Error creating pool: {obj.message}")
 
     def get_session_pool(self):
         """
@@ -48,31 +75,7 @@ class OracleDB:
         if self.pool:
             return self.pool
         else:
-            host = self.oracle_config.get('host')
-            port = self.oracle_config.get('port')
-            instance = self.oracle_config.get('instance')
-
-            try:
-                dsn_str = cx_Oracle.makedsn(host, port, service_name=instance)
-                pool = cx_Oracle.SessionPool(
-                    user=self.oracle_config.get('user'),
-                    password=self.oracle_config.get('pwd'),
-                    dsn=dsn_str,
-                    min=2,
-                    max=5,
-                    increment=1,
-                    threaded=True,
-                    encoding="UTF-8"
-                    )
-                self.pool = pool
-                return pool
-
-            except cx_Oracle.DatabaseError as err:
-                obj, = err.args
-                self.logger.error("Error creating pool")
-                self.logger.error("Context: %s", obj.context)
-                self.logger.error("Message: %s", obj.message)
-                raise Exception(f"Error creating pool: {obj.message}")
+            self.set_up_session_pool()
 
     def create_connection(self):
         """
