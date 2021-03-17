@@ -34,7 +34,7 @@ class PyDB:
         :param logging_formatter:
         """
         self.oracle_config = oracle_config
-        self.pool = None
+        self.pool = self.get_session_pool()
 
         self.logger = logging.getLogger(__name__)
         stream_handler = logging.StreamHandler()
@@ -85,12 +85,12 @@ class PyDB:
                 self.logger.error("Message: %s", obj.message)
                 raise Exception(f"Error creating pool: {obj.message}")
 
-    def create_connection(self, pool):
+    def create_connection(self):
         """
         Function for creating a connection with the database from a session pool
         """
         try:
-            connection = pool.acquire()
+            connection = self.get_session_pool().acquire()
             return connection
 
         except cx_Oracle.DatabaseError as err:
@@ -111,12 +111,12 @@ class PyDB:
             return dict(zip(column_names, args))
         return create_row
 
-    def execute_query(self, pool, query_string: str, args=None) -> dict:
+    def execute_query(self, query_string: str, args=None) -> dict:
         """
         Function for executing a query against the database via the session pool
         """
         try:
-            connection = self.create_connection(pool)
+            connection = self.create_connection()
             cursor = connection.cursor()
             if args is not None:
                 cursor.execute(query_string, args)
@@ -135,14 +135,14 @@ class PyDB:
 
         finally:
             cursor.close()
-            pool.release(connection)
+            self.get_session_pool().release(connection)
 
-    def execute_update(self, pool, query_string, args=None):
+    def execute_update(self, query_string, args=None):
         """
         Function for executing an insert/update query against the database via the session pool
         """
         try:
-            connection = self.create_connection(pool)
+            connection = self.create_connection()
             cursor = connection.cursor()
             if args is not None:
                 cursor.execute(query_string, args)
@@ -159,4 +159,4 @@ class PyDB:
 
         finally:
             cursor.close()
-            pool.release(connection)
+            self.get_session_pool().release(connection)
