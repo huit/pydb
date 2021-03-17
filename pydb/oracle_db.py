@@ -13,6 +13,8 @@ import logging
 # Third-party imports
 import cx_Oracle
 
+from pylog.pylog import get_common_logger_for_module
+
 # Local imports
 
 
@@ -21,7 +23,7 @@ class OracleDB:
     Class for interacting with an oracle database
     """
 
-    def __init__(self, oracle_config: dict, logging_format: logging.Formatter = None):
+    def __init__(self, oracle_config: dict, logging_level: int = 50, logging_format: logging.Formatter = None):
         """
         Setup for oracle db connections. oracle_config must be a python dictionary with the following fields:
         host
@@ -31,29 +33,13 @@ class OracleDB:
         pwd
 
         :param oracle_config:
-        :param logging_format:
+        :param logging_level: defaults to logging.CRITICAL
+        :param logging_format: defaults to None here, which translates to the pylog.get_commong_logging_format
         """
         self.oracle_config = oracle_config
         self.pool = self.get_session_pool()
 
-        self.logger = self.setup_logger(logging_format)
-
-    @staticmethod
-    def setup_logger(logging_format: logging.Formatter = None) -> logging.Logger:
-        logger = logging.getLogger(__name__)
-        stream_handler = logging.StreamHandler()
-        stream_handler.setLevel(logging.INFO)
-
-        if logging_format is None:
-            logging_format = logging.Formatter(
-                '{"log_level": "%(levelname)s", '
-                '"app_file_line": "%(name)s:%(lineno)d", '
-                '"message": %(message)s}'
-            )
-        stream_handler.setFormatter(logging_format)
-        logger.addHandler(stream_handler)
-        logger.setLevel(logging.INFO)
-        return logger
+        self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
 
     def get_session_pool(self):
         """
