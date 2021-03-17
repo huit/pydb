@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module for interacting with the database
+Module for interacting with an oracle database
 """
 # -*- encoding: utf-8 -*-
 
@@ -16,7 +16,7 @@ import cx_Oracle
 # Local imports
 
 
-class PyDB:
+class OracleDB:
     """
     Class for interacting with an oracle database
     """
