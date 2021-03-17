@@ -22,6 +22,7 @@ setuptools.setup(
     ],
     install_requires=[
         "cx-Oracle==8.1.0",
+        'pylog @ https://github.com/huit/pylog/archive/v0.0.1.tar.gz#egg=pylog',
     ],
     packages=setuptools.find_packages(),
     python_requires=">=3.7",
