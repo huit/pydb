@@ -15,10 +15,12 @@ import cx_Oracle
 
 from pylog.pylog import get_common_logger_for_module
 
+from .database import DBInterface
+
 # Local imports
 
 
-class OracleDB:
+class OracleDB(DBInterface):
     """
     Class for interacting with an oracle database
     """
@@ -152,3 +154,10 @@ class OracleDB:
         finally:
             cursor.close()
             self.get_session_pool().release(connection)
+
+    def health_check(self):
+        """
+        provides a means to verify DB connectivity with a simple query
+        :return:
+        """
+        return self.execute_query("SELECT 1 FROM DUAL")
