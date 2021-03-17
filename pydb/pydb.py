@@ -16,7 +16,7 @@ import cx_Oracle
 # Local imports
 
 
-class DBUtil:
+class PyDB:
     """
     Class for interacting with an oracle database
     """
