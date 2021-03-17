@@ -21,7 +21,7 @@ class OracleDB:
     Class for interacting with an oracle database
     """
 
-    def __init__(self, oracle_config: dict, logging_formatter: logging.Formatter = None):
+    def __init__(self, oracle_config: dict, logging_format: logging.Formatter = None):
         """
         Setup for oracle db connections. oracle_config must be a python dictionary with the following fields:
         host
@@ -31,26 +31,29 @@ class OracleDB:
         pwd
 
         :param oracle_config:
-        :param logging_formatter:
+        :param logging_format:
         """
         self.oracle_config = oracle_config
         self.pool = self.get_session_pool()
 
-        self.logger = logging.getLogger(__name__)
+        self.logger = self.setup_logger(logging_format)
+
+    @staticmethod
+    def setup_logger(logging_format: logging.Formatter = None) -> logging.Logger:
+        logger = logging.getLogger(__name__)
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logging.INFO)
 
-        if logging_formatter:
-            stream_handler.setFormatter(logging_formatter)
-        else:
-            stream_format = logging.Formatter(
+        if logging_format is None:
+            logging_format = logging.Formatter(
                 '{"log_level": "%(levelname)s", '
                 '"app_file_line": "%(name)s:%(lineno)d", '
                 '"message": %(message)s}'
             )
-            stream_handler.setFormatter(stream_format)
-        self.logger.addHandler(stream_handler)
-        self.logger.setLevel(logging.INFO)
+        stream_handler.setFormatter(logging_format)
+        logger.addHandler(stream_handler)
+        logger.setLevel(logging.INFO)
+        return logger
 
     def get_session_pool(self):
         """
