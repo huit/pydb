@@ -25,34 +25,36 @@ class OracleDB(DBInterface):
     Class for interacting with an oracle database
     """
 
-    def __init__(self, oracle_config: dict, logging_level: int = 50, logging_format: logging.Formatter = None):
+    def __init__(self, host: str, port: int, service: str, user: str, pwd: str, logging_level: int = 50, logging_format: logging.Formatter = None):
         """
         Setup for oracle db connections. oracle_config must be a python dictionary with the following fields:
-        host
-        port
-        instance (service name)
-        user
-        pwd
 
-        :param oracle_config:
+        :param host:
+        :param port:
+        :param service:
+        :param user:
+        :param pwd:
+        :param logging_level:
+        :param logging_format:
         :param logging_level: defaults to logging.CRITICAL
         :param logging_format: defaults to None here, which translates to the pylog.get_commong_logging_format
         """
-        self.oracle_config = oracle_config
+
+        self.host = host
+        self.port = port
+        self.service = service
+        self.user = user
+        self.pwd = pwd
         self.pool = self.set_up_session_pool()
 
         self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
 
     def set_up_session_pool(self):
-        host = self.oracle_config.get('host')
-        port = self.oracle_config.get('port')
-        instance = self.oracle_config.get('instance')
-
         try:
-            dsn_str = cx_Oracle.makedsn(host, port, service_name=instance)
+            dsn_str = cx_Oracle.makedsn(self.host, self.port, service_name=self.instance)
             pool = cx_Oracle.SessionPool(
-                user=self.oracle_config.get('user'),
-                password=self.oracle_config.get('pwd'),
+                user=self.user,
+                password=self.pwd,
                 dsn=dsn_str,
                 min=2,
                 max=5,
