@@ -163,3 +163,16 @@ class OracleDB(DBInterface):
         :return:
         """
         return self.execute_query("SELECT 1 FROM DUAL")
+
+    def cleanup(self):
+        if self.pool is not None:
+            self.logger.info("Active session pool found. Attempting to close session pool.")
+            try:
+                self.pool.close(force=True)
+                self.logger.info("Session pool successfully closed.")
+
+            except cx_Oracle.Error as err:
+                self.logger.error("Unable to close the active session.", exc_info=True)
+                obj, = err.args
+                self.logger.error("Context:", obj.context)
+                self.logger.error("Message:", obj.message)

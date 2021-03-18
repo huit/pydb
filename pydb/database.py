@@ -18,7 +18,9 @@ class DBInterface(metaclass=abc.ABCMeta):
                 hasattr(subclass, 'execute_update') and
                 callable(subclass.execute_update) and
                 hasattr(subclass, 'health_check') and
-                callable(subclass.health_check))
+                callable(subclass.health_check) and
+                hasattr(subclass, 'cleanup') and
+                callable(subclass.cleanup))
 
         @abc.abstractmethod
         def execute_query(self, query_string: str, args=None) -> dict:
@@ -30,4 +32,8 @@ class DBInterface(metaclass=abc.ABCMeta):
 
         @abc.abstractmethod
         def health_check():
+            raise NotImplementedError
+
+        @abc.abstractmethod
+        def cleanup():
             raise NotImplementedError
