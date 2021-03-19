@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pydb",
-    version="0.0.1",
+    version="0.0.2",
     author="Michael Kerry",
     author_email="michael_kerry@harvard.edu",
     description="A package to facilitate connecting to an oracle DB from a python application",
