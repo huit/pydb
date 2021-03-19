@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from pylog.pylog import get_common_logger_for_module
 
 
-class SqlAlchemyOracleUtil:
+class SqlAlchemyOracleDB:
     def __init__(self, host: str, port: int, service: str, user: str, pwd: str, 
                  logging_level: int = 50, logging_format: logging.Formatter = None):
         self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
