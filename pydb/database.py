@@ -3,11 +3,12 @@ import abc
 from enum import Enum
 
 
-class Database(Enum):
+class DatabaseType(Enum):
     """
     not implemented: other databases
     """
     ORACLE = "oracle"
+    SQL_ALCHEMY_ORACLE = "sql_alchemy_oracle"
 
 
 class DBInterface(metaclass=abc.ABCMeta):
@@ -20,7 +21,12 @@ class DBInterface(metaclass=abc.ABCMeta):
                 hasattr(subclass, 'health_check') and
                 callable(subclass.health_check) and
                 hasattr(subclass, 'cleanup') and
-                callable(subclass.cleanup))
+                callable(subclass.cleanup) and
+                hasattr(subclass, 'create_connection') and
+                callable(subclass.create_connection) and
+                hasattr(subclass, 'get_session') and
+                callable(subclass.get_session)
+                or NotImplemented)
 
         @abc.abstractmethod
         def execute_query(self, query_string: str, args=None) -> dict:
@@ -36,4 +42,12 @@ class DBInterface(metaclass=abc.ABCMeta):
 
         @abc.abstractmethod
         def cleanup():
+            raise NotImplementedError
+
+        @abc.abstractmethod
+        def create_connection():
+            raise NotImplementedError
+
+        @abc.abstractmethod
+        def get_session():
             raise NotImplementedError

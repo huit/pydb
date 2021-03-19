@@ -25,7 +25,8 @@ class OracleDB(DBInterface):
     Class for interacting with an oracle database
     """
 
-    def __init__(self, host: str, port: int, service: str, user: str, pwd: str, logging_level: int = 50, logging_format: logging.Formatter = None):
+    def __init__(self, host: str, port: int, service: str, user: str, pwd: str,
+                 logging_level: int = 50, logging_format: logging.Formatter = None):
         """
         Setup for oracle db connections. oracle_config must be a python dictionary with the following fields:
 
@@ -176,3 +177,6 @@ class OracleDB(DBInterface):
                 obj, = err.args
                 self.logger.error("Context:", obj.context)
                 self.logger.error("Message:", obj.message)
+
+    def get_session(self):
+        return None
