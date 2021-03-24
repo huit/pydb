@@ -62,6 +62,6 @@ Results for the individual rows would be in the following form:
 
     {'EMPNO': 7935, 'ENAME': 'JOHNSON', 'JOB': 'CLERK', 'MGR': 7839, 'HIREDATE': datetime.datetime(1981, 5, 1, 0, 0), 'SAL': 2850.0, 'COMM': None, 'DEPTNO': 30}
 
-Row results may vary somewhat depending on the exact module... e.g., for SqlAlchemyOracleDB you would receive the following:
+Row results may vary somewhat depending on the exact module... e.g., for SqlAlchemyOracleDB the following would be received:
 
     {'empno': 7935, 'ename': 'JOHNSON', 'job': 'CLERK', 'mgr': 7839, 'hiredate': datetime.datetime(1981, 5, 1, 0, 0), 'sal': Decimal('2850'), 'comm': None, 'deptno': 30}
