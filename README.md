@@ -23,7 +23,7 @@ In a suitable python3 (>=3.7) virtual env, using pip:
 
 ```    
     db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="username", pwd="pwd")
-    # where 8003 is a valid port)
+    # where 8003 is a valid port
 ```
 ## Basic operations
 
