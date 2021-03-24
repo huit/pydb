@@ -58,13 +58,16 @@ class SqlAlchemyOracleDB:
         with self.create_connection() as conn:
             return conn.scalar("select 1 from dual")
 
-    def execute_query(self, query_string: str, args: dict):
+    def execute_query(self, query_string: str, args: dict = None) -> list:
         with self.create_connection() as conn:
             statement = text(query_string)
+
             if args is not None and len(args.keys()) > 0:
-                return conn.execute(statement, args)
+                query_result = conn.execute(statement, args).fetchall()
             else:
-                return conn.execute(statement)
+                query_result = conn.execute(statement).fetchall()
+
+            return [dict(row) for row in query_result]
 
     def execute_update(self, query_string: str, args: dict):
         with self.create_connection() as conn:
