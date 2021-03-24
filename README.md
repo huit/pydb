@@ -21,10 +21,10 @@ In a suitable python3 (>=3.7) virtual env, using pip:
 * logging_format is optional, and will default to pylog default formatting
 * see https://github.com/huit/pylog for details
 
-    
+```    
     db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="username", pwd="pwd")
-    (where 8003 is a valid port)
-
+    # where 8003 is a valid port)
+```
 ## Basic operations
 
     create_connection()
