@@ -44,7 +44,7 @@ db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="userna
         Performs a basic query against the db to ensure connectivity
 
     cleanup()
-        Attempts to release any 'live' objects/connections to the host
+        Attempts to release any 'live' objects/connections to the host - to be run before exiting program
 
 ## Example
 
