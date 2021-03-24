@@ -46,7 +46,7 @@ db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="userna
     cleanup()
         Attempts to release any 'live' objects/connections to the host - to be run before exiting program
 
-## Example
+## Examples
 
 Given a valid connection, and a table called `EMP`...
 
