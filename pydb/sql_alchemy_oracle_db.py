@@ -10,8 +10,21 @@ from pylog.pylog import get_common_logger_for_module
 
 
 class SqlAlchemyOracleDB:
+    """
+    Module for interacting with an Oracle DB via SQL Alchemy
+    """
     def __init__(self, host: str, port: int, service: str, user: str, pwd: str, 
                  logging_level: int = 50, logging_format: logging.Formatter = None):
+        """
+        initialize object with values required to create a connection to an Oracle DB
+        :param host:
+        :param port:
+        :param service:
+        :param user:
+        :param pwd:
+        :param logging_level:
+        :param logging_format:
+        """
         self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
         self.host = host
         self.port = port
@@ -21,6 +34,10 @@ class SqlAlchemyOracleDB:
         self.engine = self.setup_engine()
 
     def setup_engine(self):
+        """
+        Create a SQL Alchemy engine to connect to Oracle DB with a connection pool
+        :return:
+        """
         try:
             dsn_str = cx_Oracle.makedsn(self.host, self.port, service_name=self.service)
             pool = cx_Oracle.SessionPool(
@@ -48,17 +65,35 @@ class SqlAlchemyOracleDB:
         return self.engine
 
     def get_session(self):
+        """
+        Specific to SQL Alchemy; allows interaction with SQL Alchemy entities
+        :return:
+        """
         Session = sessionmaker(bind=self.get_engine())
         return Session()
 
     def create_connection(self):
-        return self.engine.connect()
+        """
+        provides a connection to the db host for more 'direct' access
+        :return:
+        """
+        return self.get_engine().connect()
 
     def health_check(self):
+        """
+        Performs a basic query against the db to ensure connectivity
+        """
         with self.create_connection() as conn:
             return conn.scalar("select 1 from dual")
 
     def execute_query(self, query_string: str, args: dict = None) -> list:
+        """
+        executes a sql query, return a list of dictionaries representing rows
+
+        :param query_string: str
+        :param args: dict
+        :return: list of dict
+        """
         with self.create_connection() as conn:
             statement = text(query_string)
 
@@ -70,6 +105,13 @@ class SqlAlchemyOracleDB:
             return [dict(row) for row in query_result]
 
     def execute_update(self, query_string: str, args: dict):
+        """
+        used to execute an insert, update, or delete sql statement
+
+        :param query_string: str
+        :param args: dict
+        :return:
+        """
         with self.create_connection() as conn:
             statement = text(query_string)
             trans = conn.begin()
@@ -80,6 +122,10 @@ class SqlAlchemyOracleDB:
             trans.commit()
 
     def cleanup(self):
+        """
+        release any existing connections; to be called prior to exiting program
+        :return:
+        """
         if self.engine is not None:
             self.logger.info("sql alchemy engine found")
             try:
