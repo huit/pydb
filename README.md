@@ -4,7 +4,9 @@ a tool for facilitating connection to databases with python and performing basic
 
 ## Purpose and intended audience 
 
-
+For many APIs the responses are based upon data residing in a relational database; this module provides a standardized
+way for python programmers to access a database, via straight SQL calls to `execute_query()` and `execute_update()` and 
+also permits users to access SQLAlchemy for ORM-based interactions with database objects.
 
 ## Requirements
 
