@@ -40,11 +40,13 @@ db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="userna
         Specific to SQL Alchemy; allows interaction with SQL Alchemy entities
         see https://docs.sqlalchemy.org/en/14/orm/session.html?highlight=session#module-sqlalchemy.orm.session
 
-    execute_query(self, query_string: str, args=None) -> list
+    execute_query(self, query_string: str, args: dict = None) -> list
         executes a sql query, return a list of dictionaries representing rows
+        'args' represents a dictionary of parameterized values for the query; see examples below
 
-    execute_update(self, query_string, args=None)
+    execute_update(self, query_string, args: dict = None)
         used to execute an insert, update, or delete sql statement
+        'args' represents a dictionary of parameterized values for the query; see examples below
     
     health_check()
         Performs a basic query against the db to ensure connectivity
