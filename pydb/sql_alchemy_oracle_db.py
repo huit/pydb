@@ -8,6 +8,8 @@ from sqlalchemy.orm import sessionmaker
 
 from pylog.pylog import get_common_logger_for_module
 
+from .database import DBInterface
+
 
 class SqlAlchemyOracleDB(DBInterface):
     """
