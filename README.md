@@ -2,6 +2,10 @@
 
 a tool for facilitating connection to databases with python and performing basic operations
 
+## Purpose and intended audience 
+
+
+
 ## Requirements
 
     python >= 3.7
@@ -10,11 +14,11 @@ a tool for facilitating connection to databases with python and performing basic
 ## Installation and setup
 
 In a suitable python3 (>=3.7) virtual env, using pip:
-
+```
     pip install https://github.com/huit/pydb/archive/v0.0.2.tar.gz#egg=pydb
     # import the module for the specific type of db you'd like to use
     from pydb.oracle_db import OracleDB
-
+```
 * creating an OracleDB instance requires host, port, service, user, pwd.
     * other db types may have other requirements - see specific module for details  
 * logging_level is optional, and will default to `logging.CRITICAL`
@@ -51,17 +55,32 @@ db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="userna
 Given a valid connection, and a table called `EMP`...
 
 To query the `EMP` table for all records:
-
+```
     result = db.execute_query("select * from emp")
-
+```
 To query the `EMP` table for a specific record:
-
+```
      result = db.execute_query("select * from emp where ename= :ename", {'ename':'JOHNSON'})
-
+```
 Results for the individual rows would be in the following form:
-
+```
     {'EMPNO': 7935, 'ENAME': 'JOHNSON', 'JOB': 'CLERK', 'MGR': 7839, 'HIREDATE': datetime.datetime(1981, 5, 1, 0, 0), 'SAL': 2850.0, 'COMM': None, 'DEPTNO': 30}
-
+```
 Row results may vary somewhat depending on the exact module... e.g., for SqlAlchemyOracleDB the following would be received:
-
+```
     {'empno': 7935, 'ename': 'JOHNSON', 'job': 'CLERK', 'mgr': 7839, 'hiredate': datetime.datetime(1981, 5, 1, 0, 0), 'sal': Decimal('2850'), 'comm': None, 'deptno': 30}
+```
+
+### integrated example
+```
+pip install https://github.com/huit/pydb/archive/v0.0.2.tar.gz#egg=pydb
+
+from pydb.oracle_db import OracleDB
+db = OracleDb(host="valid_host", port=8003, service="SERVICE_NAME", user="username", pwd="pwd")
+
+result = db.execute_query("select * from emp where ename= :ename", {'ename':'JOHNSON'})
+print(result)
+     
+{'EMPNO': 7935, 'ENAME': 'JOHNSON', 'JOB': 'CLERK', 'MGR': 7839, 'HIREDATE': datetime.datetime(1981, 5, 1, 0, 0), 'SAL': 2850.0, 'COMM': None, 'DEPTNO': 30}
+
+```

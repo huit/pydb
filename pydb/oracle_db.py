@@ -50,7 +50,6 @@ class OracleDB(DBInterface):
 
         self.pool = self.set_up_session_pool()
 
-
     def set_up_session_pool(self):
         try:
             dsn_str = cx_Oracle.makedsn(self.host, self.port, service_name=self.service)
