@@ -12,21 +12,6 @@ class DatabaseType(Enum):
 
 
 class DBInterface(metaclass=abc.ABCMeta):
-    @classmethod
-    def __subclasshook__(cls, subclass):
-        return (hasattr(subclass, 'execute_query') and
-                callable(subclass.execute_query) and
-                hasattr(subclass, 'execute_update') and
-                callable(subclass.execute_update) and
-                hasattr(subclass, 'health_check') and
-                callable(subclass.health_check) and
-                hasattr(subclass, 'cleanup') and
-                callable(subclass.cleanup) and
-                hasattr(subclass, 'create_connection') and
-                callable(subclass.create_connection) and
-                hasattr(subclass, 'get_session') and
-                callable(subclass.get_session)
-                or NotImplemented)
 
         @abc.abstractmethod
         def execute_query(self, query_string: str, args=None) -> list:

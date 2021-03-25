@@ -48,7 +48,7 @@ class OracleDB(DBInterface):
         self.pwd = pwd
         self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
 
-        self.pool = self.set_up_session_pool()
+        self._pool = self.set_up_session_pool()
 
     def set_up_session_pool(self):
         try:
@@ -63,7 +63,6 @@ class OracleDB(DBInterface):
                 threaded=True,
                 encoding="UTF-8"
             )
-            self.pool = pool
             return pool
 
         except cx_Oracle.DatabaseError as err:
@@ -73,22 +72,12 @@ class OracleDB(DBInterface):
             self.logger.error("Message: %s", obj.message)
             raise Exception(f"Error creating pool: {obj.message}")
 
-    def get_session_pool(self):
-        """
-        Function for creating a session pool with the database
-        """
-        if self.pool:
-            return self.pool
-        else:
-            self.set_up_session_pool()
-
     def create_connection(self):
         """
         Function for creating a connection with the database from a session pool
         """
         try:
-            connection = self.get_session_pool().acquire()
-            return connection
+            return self._pool.acquire()
 
         except cx_Oracle.DatabaseError as err:
             obj, = err.args
@@ -132,7 +121,7 @@ class OracleDB(DBInterface):
 
         finally:
             cursor.close()
-            self.get_session_pool().release(connection)
+            self._pool.release(connection)
 
     def execute_update(self, query_string, args=None):
         """
@@ -156,7 +145,7 @@ class OracleDB(DBInterface):
 
         finally:
             cursor.close()
-            self.get_session_pool().release(connection)
+            self._pool.release(connection)
 
     def health_check(self):
         """
@@ -166,10 +155,10 @@ class OracleDB(DBInterface):
         return self.execute_query("SELECT 1 FROM DUAL")
 
     def cleanup(self):
-        if self.pool is not None:
+        if self._pool is not None:
             self.logger.info("Active session pool found. Attempting to close session pool.")
             try:
-                self.pool.close(force=True)
+                self._pool.close(force=True)
                 self.logger.info("Session pool successfully closed.")
 
             except cx_Oracle.Error as err:

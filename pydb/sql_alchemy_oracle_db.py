@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from pylog.pylog import get_common_logger_for_module
 
 
-class SqlAlchemyOracleDB:
+class SqlAlchemyOracleDB(DBInterface):
     """
     Module for interacting with an Oracle DB via SQL Alchemy
     """
