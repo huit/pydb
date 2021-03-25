@@ -46,9 +46,10 @@ class OracleDB(DBInterface):
         self.service = service
         self.user = user
         self.pwd = pwd
+        self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
+
         self.pool = self.set_up_session_pool()
 
-        self.logger = get_common_logger_for_module(module_name=__name__, level=logging_level, log_format=logging_format)
 
     def set_up_session_pool(self):
         try:
